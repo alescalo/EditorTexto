@@ -1,0 +1,41 @@
+<resources>
+
+    <string-array name="language_names" translatable="false">
+        <item>System</item>
+        <item>English</item>
+        <item>Русский</item>
+        <item>Portuguese</item>
+        <item>Deutsch</item>
+        <item>العربية</item>
+        <item>Espanol</item>
+        <item>Italiano</item>
+        <item>Türk</item>
+    </string-array>
+
+    <string-array name="language_values" translatable="false">
+        <item></item>
+        <item>en</item>
+        <item>ru</item>
+        <item>pt</item>
+        <item>de</item>
+        <item>ar</item>
+        <item>es</item>
+        <item>it</item>
+        <item>tr</item>
+    </string-array>
+
+    <string-array name="line_delimiter_names" translatable="false">
+        <item>default</item>
+        <item>Unix (LF, \\n, 0A)</item>
+        <item>Windows (CRLF, \\r\\n, 0D0A)</item>
+        <item>MacOS 9 (CR, \\r, 0D)</item>
+    </string-array>
+
+    <string-array name="line_delimiter_values" translatable="false">
+        <item>default</item>
+        <item>unix</item>
+        <item>windows</item>
+        <item>macos</item>
+    </string-array>
+
+</resources>
