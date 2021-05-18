@@ -9,41 +9,43 @@ import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
 import android.widget.TextView;
-
 /**
- * see https://gist.github.com/vejei/0cfa738c1e8b65b23ff7df1fc30c9f7e
+ * Clase EditTextUndoRedo
+ *
+ *
+ * @version 1.0
  */
 public class EditTextUndoRedo {
 
     /**
-     * Is undo/redo being performed? This member signals if an undo/redo
-     * operation is currently being performed. Changes in the text during
-     * undo/redo are not recorded because it would mess up the undo history.
+     * ¿Se está realizando deshacer / rehacer? Este miembro indica si deshacer / rehacer
+     * La operación se está realizando actualmente. Cambios en el texto durante
+     * deshacer / rehacer no se registran porque estropearía el historial de deshacer.
      */
     private boolean mIsUndoOrRedo = false;
 
     /**
-     * The edit history.
+     * El historial de ediciones.
      */
     private EditHistory mEditHistory;
 
     /**
-     * The change listener.
+     * El listener del cambio.
      */
     private EditTextChangeListener mChangeListener;
 
     /**
-     * The edit text.
+     * El edit text.
      */
     private TextView mTextView;
 
     // =================================================================== //
 
     /**
-     * Create a new TextViewUndoRedo and attach it to the specified TextView.
+     * Cree un nuevo TextViewUndoRedo y lo añade al TextView especificado.
      *
      * @param textView
-     *            The text view for which the undo/redo is implemented.
+     *            La vista de texto para la que se implementa deshacer / rehacer.
      */
     public EditTextUndoRedo(TextView textView) {
         mTextView = textView;
@@ -55,36 +57,37 @@ public class EditTextUndoRedo {
     // =================================================================== //
 
     /**
-     * Disconnect this undo/redo from the text view.
+     * Desconecta este deshacer / rehacer de la vista de texto.
      */
     public void disconnect() {
         mTextView.removeTextChangedListener(mChangeListener);
     }
 
     /**
-     * Set the maximum history size. If size is negative, then history size is
-     * only limited by the device memory.
+     * Establezca el tamaño máximo del historial. Si el tamaño es negativo, el tamaño del historial solo está limitado por la memoria del dispositivo.
+     * @param maxHistorySize
      */
     public void setMaxHistorySize(int maxHistorySize) {
         mEditHistory.setMaxHistorySize(maxHistorySize);
     }
 
     /**
-     * Clear history.
+     * Limpia historial
      */
     public void clearHistory() {
         mEditHistory.clear();
     }
 
     /**
-     * Can undo be performed?
+     * ¿Se puede deshacer?
+     * @return boolean
      */
     public boolean getCanUndo() {
         return (mEditHistory.mmPosition > 0);
     }
 
     /**
-     * Perform undo.
+     * Realizar deshacer.
      */
     public void undo() {
         EditItem edit = mEditHistory.getPrevious();
@@ -111,14 +114,15 @@ public class EditTextUndoRedo {
     }
 
     /**
-     * Can redo be performed?
+     * ¿Se puede rehacer?
+     * @return boolean
      */
     public boolean getCanRedo() {
         return (mEditHistory.mmPosition < mEditHistory.mmHistory.size());
     }
 
     /**
-     * Perform redo.
+     * Realizar rehacer
      */
     public void redo() {
         EditItem edit = mEditHistory.getNext();
@@ -145,7 +149,9 @@ public class EditTextUndoRedo {
     }
 
     /**
-     * Store preferences.
+     * Preferencias de la tienda.
+     * @param editor
+     * @param prefix
      */
     public void storePersistentState(Editor editor, String prefix) {
         // Store hash code of text in the editor so that we can check if the
@@ -169,12 +175,12 @@ public class EditTextUndoRedo {
     }
 
     /**
-     * Restore preferences.
+     * Restaura preferencias
      *
      * @param prefix
-     *            The preference key prefix used when state was stored.
-     * @return did restore succeed? If this is false, the undo history will be
-     *         empty.
+     *            El prefijo de la clave de preferencia utilizado cuando se almacenó el estado
+     * @return ¿La restauración tuvo éxito? Si esto es falso, el historial de deshacer será
+     * vacío.
      */
     public boolean restorePersistentState(SharedPreferences sp, String prefix)
             throws IllegalStateException {

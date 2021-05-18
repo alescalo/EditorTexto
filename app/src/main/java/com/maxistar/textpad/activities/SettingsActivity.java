@@ -22,14 +22,29 @@ import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
 import com.maxistar.textpad.TPStrings;
-
+/**
+ * Clase SettingsActivity
+ *
+ * Contiene informacion sobre toda la funcionalidad del apartado “opciones”.
+ *
+ * @version 1.0
+ */
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
-
+    /**
+     * Version
+     */
     Preference mVersion;
-
+    /**
+     * Estado de las opciones
+     */
     SettingsService settingsService;
 
     @Override
+    /**
+     * Se llama al crearse la actividad
+     * @param savedInstanceState
+     *
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settingsService = ServiceLocator.getInstance().getSettingsService(getApplicationContext());
@@ -83,6 +98,9 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     }
 
     @Override
+    /**
+     * Se llama cuando se reanuda la actividad
+     */
     protected void onResume() {
         super.onResume();
         // Setup the initial values
@@ -93,6 +111,9 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     }
 
     @Override
+    /**
+     * Se llama cuando sepausa la actividad
+     */
     protected void onPause() {
         super.onPause();
 
@@ -100,7 +121,11 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
         settingsService.reloadSettings(this.getApplicationContext());
     }
-
+    /**
+     * Se llama sobre si han cambiado las preferencias de las opciones
+     * @param sharedPreferences
+     * @param key
+     */
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (SettingsService.SETTING_LANGUAGE.equals(key) ||
             SettingsService.SETTING_FONT.equals(key) ||
@@ -115,7 +140,10 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         settingsService.reloadSettings(this.getApplicationContext());
     }
 
-
+    /**
+     * Define las opciones en el movil
+     * @param lang
+     */
     public void setLocale(String lang) {
         Locale locale2 = new Locale(lang);
         Locale.setDefault(locale2);
@@ -127,7 +155,9 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         getBaseContext().getResources().updateConfiguration(config2, null);
         showPreferences();
     }
-
+    /**
+     * Muestra las preferencias
+     */
     protected void showPreferences(){
         Intent intent = new Intent(this, SettingsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

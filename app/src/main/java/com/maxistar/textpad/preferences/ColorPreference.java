@@ -18,16 +18,37 @@ import android.widget.ImageView;
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
-
+/**
+ * Clase ColorPreference
+ *
+ * Contiene informacion para cambiar el color de fuente y de fondo
+ *
+ * @version 1.0
+ */
 public class ColorPreference extends DialogPreference
 {
+    /**
+     * Color
+     */
     private int color;
+    /**
+     * Atributo
+     */
     private String attribute;
+    /**
+     * Titulo
+     */
     private String title;
-
+    /**
+     * Servicio de opciones
+     */
     private SettingsService settingsService;
 
-    // This is the constructor called by the inflater
+    /**
+     * Constructor de la clase que  es llamado por el inflater
+     * @param context
+     * @param attrs
+     */
     public ColorPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -48,6 +69,10 @@ public class ColorPreference extends DialogPreference
     }
 
     @Override
+    /**
+     * En la vista enlazada
+     * @param view
+     */
     protected void onBindView(View view) {
         super.onBindView(view);
         
@@ -60,6 +85,10 @@ public class ColorPreference extends DialogPreference
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
+    /**
+     * Creador de cuadro de dialogo
+     * @param builder
+     */
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder){
         // Data has changed, notify so UI can be refreshed!
         builder.setTitle(title);

@@ -53,29 +53,74 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
-
+/**
+ * Clase EditorActivity
+ *
+ * Contiene informacion sobre el editor de texto, permite al usuario visualizar y editar el texto, deshacer, rehacer, buscar, crear un nuevo archivo, abrir un archivo, guardar, guardar como y acceder al apartado de opciones.
+ *
+ * @version 1.0
+ */
 public class EditorActivity extends AppCompatActivity {
 
+    /**
+     * Estado del archivo
+     */
     private static final String STATE_FILENAME = "filename";
+    /**
+     *Estado cambiado
+     */
     private static final String STATE_CHANGED = "changed";
+    /**
+     * Estado de la posicion del cursor
+     */
     private static final String STATE_CURSOR_POSITION = "cursor-position";
-
+    /**
+     * Se solicita abrir
+     */
     private static final int REQUEST_OPEN = 1;
+    /**
+     * Se solicita guardar
+     */
     private static final int REQUEST_SAVE = 2;
+    /**
+     * Se solicita ir a opciones
+     */
     private static final int REQUEST_SETTINGS = 3;
-
+    /**
+     * Accion elegir archivo
+     */
     private static final int ACTION_OPTION_FILE = 4;
+    /**
+     * Accion guardar archivo
+     */
     private static final int ACTION_SAVE_FILE = 5;
-
+    /**
+     * No hacer nada
+     */
     private static final int DO_NOTHING = 0;
+    /**
+     * Abrir
+     */
     private static final int DO_OPEN = 1;
+    /**
+     * Crear nuevo
+     */
     private static final int DO_NEW = 2;
+    /**
+     * Salir
+     */
     private static final int DO_EXIT = 3;
-
+    /**
+     * Hacer Log
+     */
     private static final String LOG_TAG = "TextEditor";
-
+    /**
+     * Listener de la peticion
+     */
     private QueryTextListener queryTextListener;
-
+    /**
+     * Vector de extensiones
+     */
     String [] mimeTypes = {
             "text/*",
             "plain/*",
@@ -83,28 +128,56 @@ public class EditorActivity extends AppCompatActivity {
             "application/ecmascript",
             "application/javascript"
     };
-
+    /**
+     * EditText
+     */
     private EditText mText;
+    /**
+     * ScrolView
+     */
     private ScrollView scrollView;
-    
+    /**
+     * Url del fichero
+     */
     String urlFilename = TPStrings.EMPTY;
-    
+    /**
+     * Cambio
+     */
     boolean changed = false;
+    /**
+     * Salir del cuadro de dialogo
+     */
     boolean exitDialogShown = false;
-
+    /**
+     * Siguiente Accion
+     */
     private int next_action = DO_NOTHING; // to figure out better way
-
+    /**
+     * Empezaar seleccion
+     */
     static int selectionStart = 0;
-
+    /**
+     * Opciones
+     */
     SettingsService settingsService;
-
+    /**
+     * Menu de ficheros
+     */
     private MenuItem searchItem;
-
+    /**
+     * TextWatcher
+     */
     private TextWatcher textWatcher;
-
+   /**
+    * EditTextUndoRedo
+    */
     EditTextUndoRedo editTextUndoRedo;
 
-    /** Called when the activity is first created. */
+    /**
+     * Se llama al crearse la actividad
+     * @param savedInstanceState
+     *
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,11 +245,10 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     /**
-     * Checks if the app has permission to write to device storage
+     * Comprueba si la aplicacion tiene permisos de escritura en el móvil
+     * Si la aplicacio no tiene permisos, entonces al usuario se le solicita que otorgue permisos
      *
-     * If the app does not has permission then the user will be prompted to grant permissions
-     *
-     * @param activity Activity
+     * @param activity Actividad
      */
     public static void verifyPermissions(Activity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -198,7 +270,9 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Se llama cuando se reanuda la actividad
+     */
     protected void onResume() {
         super.onResume();
         String t = mText.getText().toString().toLowerCase(Locale.getDefault());
@@ -213,7 +287,9 @@ public class EditorActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
+    /**
+     * Se llama cuando sepausa la actividad
+     */
     protected void onPause() {
         mText.removeTextChangedListener(textWatcher);      // to prevent text
         super.onPause();
@@ -237,14 +313,19 @@ public class EditorActivity extends AppCompatActivity {
         outState.putBoolean(STATE_CHANGED, changed);
         outState.putInt(STATE_CURSOR_POSITION, mText.getSelectionStart());
     }
-
+    /**
+     * Se llama cuando se detiene la actividad
+     */
     protected void onStop() {
         //
         // modification once rotated
         super.onStop();
     }
 
-
+    /**
+     * Se llama cuando se mantiene presionado el boton de borrar
+     *
+     */
     @Override
     public void onBackPressed() {
         if (this.changed && !exitDialogShown) {
@@ -277,7 +358,12 @@ public class EditorActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
+    /**
+     * Se llama cuando se mantiene presionado el boton de borrar
+     * @param stringId
+     * @param parameter
+     * @return String
+     */
     String formatString(int stringId, String parameter) {
         return this.getResources().getString(stringId, parameter);
     }
@@ -296,7 +382,9 @@ public class EditorActivity extends AppCompatActivity {
         }
         return true;
     }
-
+    /**
+     * Se llama cuando se abre el ultimo archivo usado
+     */
     void openLastFile() {
         if (!settingsService.getLastFilename().equals(TPStrings.EMPTY)) {
             if (useAndroidManager()) {
@@ -310,7 +398,9 @@ public class EditorActivity extends AppCompatActivity {
             showToast(formatString(R.string.opened_last_edited_file, settingsService.getLastFilename()));
         }
     }
-
+    /**
+     * Se llama cuando se actualiza el titulo del archivo
+     */
     void updateTitle() {
         String title;
         if (urlFilename.equals(TPStrings.EMPTY)) {
@@ -324,7 +414,11 @@ public class EditorActivity extends AppCompatActivity {
         }
         this.setTitle(title);
     }
-
+    /**
+     * Devuleve el nombre del archivo conociendo su uri
+     * @param uri
+     * @return String
+     */
     String getFilenameByUri(Uri uri) {
         String path = uri.getPath();
         String[] paths = path.split("/");
@@ -333,7 +427,9 @@ public class EditorActivity extends AppCompatActivity {
         }
         return paths[paths.length -1];
     }
-
+    /**
+     * Se llama cuando se desea aplicar las nuevas opciones
+     */
     void applyPreferences() {
 
         mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE |
@@ -376,7 +472,10 @@ public class EditorActivity extends AppCompatActivity {
         int fontcolor = settingsService.getFontColor();//
         mText.setTextColor(fontcolor);
     }
-
+    /**
+     * Devuleve el TextListener de la peticion
+     * @return QueryTextListener
+     */
     private QueryTextListener getQueryTextListener() {
         if (queryTextListener == null) {
             queryTextListener = new QueryTextListener();
@@ -385,6 +484,13 @@ public class EditorActivity extends AppCompatActivity {
     };
 
     @Override
+    /**
+     * Devuleve el boolean
+     *   @return <ul>
+     *  <li>true: si el menu esta listo</li>
+     *  <li>false: en caso contrario</li>
+     *  </ul>
+     */
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Set up search view
         searchItem = menu.findItem(R.id.menu_document_search);
@@ -410,6 +516,13 @@ public class EditorActivity extends AppCompatActivity {
 
     @SuppressLint("RestrictedApi")
     @Override
+    /**
+     * Devuleve el boolean
+     *   @return <ul>
+     *  <li>true: si el menu esta listo</li>
+     *  <li>false: en caso contrario</li>
+     *  </ul>
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
@@ -422,6 +535,13 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * Devuleve el boolean
+     *   @return <ul>
+     *  <li>true: si el item seleccionado existe y es valido</li>
+     *  <li>false: en caso contrario</li>
+     *  </ul>
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_document_open) {
@@ -450,7 +570,9 @@ public class EditorActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    /**
+     * Crea un nuevo archivo
+     */
     protected void newFile() {
         if (changed) {
             new AlertDialog.Builder(this)
@@ -480,7 +602,9 @@ public class EditorActivity extends AppCompatActivity {
             clearFile();
         }
     }
-
+    /**
+     * Limpiar un archivo (borrar todo su contenido)
+     */
     protected void clearFile() {
         mText.setText(TPStrings.EMPTY);
         editTextUndoRedo.clearHistory();
@@ -488,15 +612,21 @@ public class EditorActivity extends AppCompatActivity {
         changed = false;
         this.updateTitle();
     }
-
+    /**
+     * Dentro del menu de editar seleccionar la funcion rehacer
+     */
     protected void editRedo() {
         editTextUndoRedo.redo();
     }
-
+    /**
+     * Dentro del menu de editar seleccionar la funcion deshacer
+     */
     protected void editUndo() {
         editTextUndoRedo.undo();
     }
-
+    /**
+     * Seleccionar la opcion guardar como
+     */
     protected void saveAs() {
         if (useAndroidManager()) {
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -511,7 +641,9 @@ public class EditorActivity extends AppCompatActivity {
             this.startActivityForResult(intent, REQUEST_SAVE);
         }
     }
-
+    /**
+     * Seleccionar la opcion abrir archivo
+     */
     protected void openFile() {
         if (changed) {
             new AlertDialog.Builder(this)
@@ -541,7 +673,9 @@ public class EditorActivity extends AppCompatActivity {
             openNewFile();
         }
     }
-
+    /**
+     * Seleccionar la opcion salir de la aplicacion
+     */
     protected void exitApplication() {
         if (changed) {
             new AlertDialog.Builder(this)
@@ -571,7 +705,9 @@ public class EditorActivity extends AppCompatActivity {
             System.exitFromApp(EditorActivity.this);
         }
     }
-
+    /**
+     * Seleccionar la opcion abrir nuevo archivo
+     */
     protected void openNewFile() {
         if (useAndroidManager()) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -587,7 +723,9 @@ public class EditorActivity extends AppCompatActivity {
             this.startActivityForResult(intent, REQUEST_OPEN);
         }
     }
-
+    /**
+     * Seleccionar la opcion guardar archivo
+     */
     protected void saveFile() {
         if (urlFilename.equals(TPStrings.EMPTY)) {
             saveAs();
@@ -599,7 +737,9 @@ public class EditorActivity extends AppCompatActivity {
             }
         }
     }
-
+    /**
+     * Seleccionar la opcion guardar pero con confirmacion del usuario
+     */
     protected void saveFileWithConfirmation() {
         if (this.fileAlreadyExists()) {
             new AlertDialog.Builder(this)
@@ -632,12 +772,20 @@ public class EditorActivity extends AppCompatActivity {
             }
         }
     }
-
+    /**
+     * Devuleve el boolean
+     *   @return <ul>
+     *  <li>true: si el archivo ya existe</li>
+     *  <li>false: en caso contrario</li>
+     *  </ul>
+     */
     protected boolean fileAlreadyExists() {
         File f = new File(urlFilename);
         return f.exists();
     }
-
+    /**
+     * Guardar el archivo de legado
+     */
     protected void saveNamedFileLegacy() {
         try {
             File f = new File(urlFilename);
@@ -677,7 +825,10 @@ public class EditorActivity extends AppCompatActivity {
             this.showToast(R.string.Can_not_write_file);
         }
     }
-
+    /**
+     * Guardar archivo
+     * @param uri
+     */
     protected void saveFile(Uri uri) throws FileNotFoundException, IOException {
         ContentResolver contentResolver = getContentResolver();
         OutputStream fos = contentResolver.openOutputStream(uri);
@@ -688,7 +839,9 @@ public class EditorActivity extends AppCompatActivity {
         fos.write(s.getBytes(settingsService.getFileEncoding()));
         fos.close();
     }
-
+    /**
+     * Guardar archivo con nombre
+     */
     protected void saveNamedFile() {
         try {
             Uri uri = Uri.parse(urlFilename);
@@ -716,7 +869,10 @@ public class EditorActivity extends AppCompatActivity {
         }
 
     }
-
+    /**
+     * Abrir archivo de legado
+     * @param filename
+     */
     protected void openNamedFileLegacy(String filename) {
         try {
             File f = new File(filename);
@@ -754,6 +910,10 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    /**
+     * Abrir archivo con nombre
+     * @param uri
+     */
     protected void openNamedFile(Uri uri) {
         try {
             ContentResolver contentResolver = getContentResolver();
@@ -788,8 +948,8 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     /**
-     * @param value String to fix
-     * @return Fixed String
+     * @param value String a arreglar
+     * @return String arreglada
      */
     String applyEndings(String value){
         String to = settingsService.getDelimiters();
@@ -867,14 +1027,18 @@ public class EditorActivity extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
+    /**
+     * Muestra un toast informativo al usuario
+     */
     protected void showToast(int toast_str) {
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, toast_str, duration);
         toast.show();
     }
-
+    /**
+     * Muestra un toast informativo al usuario
+     */
     protected void showToast(String toast_str) {
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_SHORT;

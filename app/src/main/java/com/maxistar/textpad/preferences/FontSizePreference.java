@@ -17,14 +17,28 @@ import android.widget.TextView;
 import com.maxistar.textpad.R;
 import com.maxistar.textpad.ServiceLocator;
 import com.maxistar.textpad.SettingsService;
-
+/**
+ * Clase FontSizePreference
+ *
+ * Contiene la funcionalidad necesaria para cambiar el tamaño de la fuente.
+ *
+ * @version 1.0
+ */
 public class FontSizePreference extends DialogPreference
 {
+    /**
+     * Seleccionado
+     */
     private int selected;
-
+    /**
+     * Servicio de opciones
+     */
     private SettingsService settingsService;
-
-    // This is the constructor called by the inflater
+    /**
+     * Constructor de la clase que  es llamado por el inflater
+     * @param context
+     * @param attrs
+     */
     public FontSizePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -51,6 +65,10 @@ public class FontSizePreference extends DialogPreference
     }
 
     @Override
+    /**
+     * Creador de cuadro de dialogo
+     * @param builder
+     */
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder){
         // Data has changed, notify so UI can be refreshed!
         builder.setTitle(R.string.Choose_a_font_type);
@@ -102,8 +120,8 @@ public class FontSizePreference extends DialogPreference
 
 
     /********************************************************************
-     * class FontTypeArrayAdapter
-     * 		Array adapter for font type picker */
+     * Clase FontTypeArrayAdapter
+     * 		Array adapter para el picker de tipo de fuente */
     public class FontTypeArrayAdapter extends ArrayAdapter<String>
     {
         // just a basic constructor
@@ -111,11 +129,6 @@ public class FontSizePreference extends DialogPreference
             super(context, resource, objects);
 
         } // end constructor one
-
-        /**
-         * getView
-         * the overload getView method
-         */
         public View getView(int position, View convertView, ViewGroup parent)
         {
             // get the view that would normally be returned
