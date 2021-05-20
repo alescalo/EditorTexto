@@ -192,7 +192,14 @@ public class EditTextUndoRedo {
 
         return ok;
     }
-
+    /**
+     * Restaurar estado persistente
+     *
+     * @param sp
+     * @param prefix
+     *
+     * @return boolean
+     */
     private boolean doRestorePersistentState(SharedPreferences sp, String prefix) {
 
         String hash = sp.getString(prefix + ".hash", null);
@@ -233,29 +240,27 @@ public class EditTextUndoRedo {
     // =================================================================== //
 
     /**
-     * Keeps track of all the edit history of a text.
+     * Realiza un seguimiento de todo el historial de edición de un texto.
      */
     private static final class EditHistory {
 
         /**
-         * The position from which an EditItem will be retrieved when getNext()
-         * is called. If getPrevious() has not been called, this has the same
-         * value as mmHistory.size().
+         * La posición desde la que se recuperará un EditItem cuando se llame a getNext (). Si no se ha llamado a getPrevious (), tiene el mismo valor que mmHistory.size ().
          */
         private int mmPosition = 0;
 
         /**
-         * Maximum undo history size.
+         * Tamaño máximo del historial de deshacer.
          */
         private int mmMaxHistorySize = -1;
 
         /**
-         * The list of edits in chronological order.
+         * La lista de ediciones en orden cronológico.
          */
         private final LinkedList<EditItem> mmHistory = new LinkedList<>();
 
         /**
-         * Clear history.
+         * Limpiar historial
          */
         private void clear() {
             mmPosition = 0;
@@ -263,9 +268,7 @@ public class EditTextUndoRedo {
         }
 
         /**
-         * Adds a new edit operation to the history at the current position. If
-         * executed after a call to getPrevious() removes all the future history
-         * (elements with positions >= current history position).
+         * Agrega una nueva operación de edición al historial en la posición actual. Si se ejecuta después de una llamada a getPrevious (), elimina todo el historial futuro (elementos con posiciones> = posición actual del historial).
          */
         private void add(EditItem item) {
             while (mmHistory.size() > mmPosition) {
@@ -280,8 +283,7 @@ public class EditTextUndoRedo {
         }
 
         /**
-         * Set the maximum history size. If size is negative, then history size
-         * is only limited by the device memory.
+         * Establezca el tamaño máximo del historial. Si el tamaño es negativo, el tamaño del historial solo está limitado por la memoria del dispositivo.
          */
         private void setMaxHistorySize(int maxHistorySize) {
             mmMaxHistorySize = maxHistorySize;
@@ -291,7 +293,7 @@ public class EditTextUndoRedo {
         }
 
         /**
-         * Trim history when it exceeds max history size.
+         * Recorte el historial cuando supere el tamaño máximo del historial.
          */
         private void trimHistory() {
             while (mmHistory.size() > mmMaxHistorySize) {
@@ -305,8 +307,7 @@ public class EditTextUndoRedo {
         }
 
         /**
-         * Traverses the history backward by one position, returns and item at
-         * that position.
+         * Recorre el historial hacia atrás en una posición, devuelve un artículo en esa posición.
          */
         private EditItem getPrevious() {
             if (mmPosition == 0) {
@@ -317,8 +318,7 @@ public class EditTextUndoRedo {
         }
 
         /**
-         * Traverses the history forward by one position, returns and item at
-         * that position.
+         * Recorre el historial hacia adelante en una posición, devuelve un artículo en esa posición.
          */
         private EditItem getNext() {
             if (mmPosition >= mmHistory.size()) {
@@ -332,7 +332,7 @@ public class EditTextUndoRedo {
     }
 
     /**
-     * Represents the changes performed by a single edit operation.
+     * Representa los cambios realizados por una sola operación de edición.
      */
     private static final class EditItem {
         private final int mmStart;
@@ -340,8 +340,7 @@ public class EditTextUndoRedo {
         private final CharSequence mmAfter;
 
         /**
-         * Constructs EditItem of a modification that was applied at position
-         * start and replaced CharSequence before with CharSequence after.
+         * Construye EditItem de una modificación que se aplicó al inicio de la posición y reemplazó CharSequence antes por CharSequence después.
          */
         public EditItem(int start, CharSequence before, CharSequence after) {
             mmStart = start;
@@ -351,15 +350,22 @@ public class EditTextUndoRedo {
     }
 
     /**
-     * Class that listens to changes in the text.
+     * Clase que escucha cambios en el texto.
      */
     private final class EditTextChangeListener implements TextWatcher {
 
         /**
-         * The text that will be removed by the change event.
+         * El texto que será eliminado por el evento de cambio.
          */
         private CharSequence mBeforeChange;
 
+        /**
+         * El texto antes de ser cambiado
+         * @param s
+         * @param start
+         * @param count
+         * @param after
+         */
         public void beforeTextChanged(CharSequence s, int start, int count,
                                       int after) {
             if (mIsUndoOrRedo) {
@@ -368,7 +374,13 @@ public class EditTextUndoRedo {
 
             mBeforeChange = s.subSequence(start, start + count);
         }
-
+        /**
+         * Cuando el texto es cambiado
+         * @param s
+         * @param start
+         * @param before
+         * @param count
+         */
         public void onTextChanged(CharSequence s, int start, int before,
                                   int count) {
             if (mIsUndoOrRedo) {

@@ -8,14 +8,23 @@ import android.text.SpannableString;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
 
+/**
+ * Esta clase no se usa actualmente en esta versión de la aplicación, está pensada para mostrar al usuario información sobre los autores de la app
+ */
 public class AboutBox extends DialogPreference
 {
-	// This is the constructor called by the inflater
+	/**
+	 * Este es el constructor llamado por el inflater.
+	 */
 	public AboutBox(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
 	@Override
+	/**
+	 * Se llama cuando se crea el cuadro de dialogo
+	 * @param builder
+	 */
 	protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
 	    // Data has changed, notify so UI can be refreshed!
 		//builder.setTitle(R.string.About);

@@ -20,44 +20,47 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * Clase utilizada para abrir y guardar un archivo.
+ */
 public class FileDialog extends ListActivity {
 
 	/**
-	 *
+	 * Ruta del fichero
 	 */
 	private List<String> path = null;
 
 	/**
-	 * Text view with the name
+	 * Text view con su nombre
 	 */
 	private TextView myPath;
 
 	/**
-	 * Edit text with the file name
+	 * Edit text con el nombre
 	 */
 	private EditText mFileName;
 
 	/**
-	 *
+	 * Array list mlist
 	 */
 	private ArrayList<HashMap<String, Object>> mList;
 
 	/**
-	 *
+	 * Path del padre
 	 */
 	private String parentPath;
 
 	/**
-	 *
+	 * Path actual
 	 */
 	private String currentPath;
 
 	/**
-	 *
+	 * Path raiz
 	 */
 	private String rootPath;
 
-	/** Called when the activity is first created. */
+	/** Se llama cuando se crea por primera vez la actividad */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -127,6 +130,10 @@ public class FileDialog extends ListActivity {
 		readDir(startPath);
 	}
 
+	/**
+	 * Lee el directorio
+	 * @param dirPath
+	 */
 	private void readDir(String dirPath) {
 		currentPath = dirPath;
 
@@ -207,14 +214,20 @@ public class FileDialog extends ListActivity {
 		setListAdapter(fileList);
 	}
 
-
+	/**
+	 * Añade un item
+	 * @param fileName
+	 * @param imageId
+	 */
 	private void addItem(String fileName, int imageId) {
 		HashMap<String, Object> item = new HashMap<>();
 		item.put(TPStrings.ITEM_KEY, fileName);
 		item.put(TPStrings.ITEM_IMAGE, imageId);
 		mList.add(item);
 	}
-
+	/**
+	 * Guarda el path de inicio
+	 */
 	private void saveStartPath(String currentPath) {
         SharedPreferences settings = getSharedPreferences(TPStrings.FILE_DIALOG, 0);
         SharedPreferences.Editor editor = settings.edit();
